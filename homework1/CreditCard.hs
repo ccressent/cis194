@@ -11,11 +11,10 @@ toDigitsRev :: Integer -> [Integer]
 toDigitsRev = reverse . toDigits
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther []  = []
-doubleEveryOther [x] = [x]
-doubleEveryOther xs  = doubleEveryOther rest ++ [doubled] ++ [last xs]
-    where rest    = init (init xs)
-          doubled = 2 * last (init xs)
+doubleEveryOther = reverse . doubleEveryOther' . reverse 
+    where doubleEveryOther' []       = []
+          doubleEveryOther' [x]      = [x]
+          doubleEveryOther' (x:y:ys) = x : 2*y : doubleEveryOther' ys
 
 sumDigits :: [Integer] -> Integer
 sumDigits xs = sum $ map (sum . toDigits) xs
