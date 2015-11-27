@@ -19,3 +19,6 @@ doubleEveryOther xs  = doubleEveryOther rest ++ [doubled] ++ [last xs]
 
 sumDigits :: [Integer] -> Integer
 sumDigits xs = sum $ map (sum . toDigits) xs
+
+validate :: Integer -> Bool
+validate n = (sumDigits . doubleEveryOther . toDigits) n `rem` 10 == 0
