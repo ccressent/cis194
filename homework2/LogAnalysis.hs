@@ -33,3 +33,14 @@ build = foldr insert Leaf
 inOrder :: MessageTree -> [LogMessage]
 inOrder Leaf = []
 inOrder (Node left val right) = inOrder left ++ [val] ++ inOrder right
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong xs = map extractMessage $ filter severeEnough $ inOrder (build xs)
+
+    where extractMessage (Unknown m)        = m
+          extractMessage (LogMessage _ _ m) = m
+
+          severeEnough (Unknown _)        = False
+          severeEnough (LogMessage t _ _) = case t of
+              Error n -> n >= 50
+              _       -> False
