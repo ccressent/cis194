@@ -26,3 +26,6 @@ insert msg@(LogMessage _ stamp _) (Node left val@(LogMessage _ nodeStamp _) righ
     | stamp < nodeStamp = Node (insert msg left) val right
     | otherwise         = Node left val (insert msg right)
 insert _ tree = tree
+
+build :: [LogMessage] -> MessageTree
+build = foldr insert Leaf
