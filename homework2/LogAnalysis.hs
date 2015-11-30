@@ -19,3 +19,10 @@ parseMessage s = case msgType of
 
 parse :: String -> [LogMessage]
 parse s = map parseMessage (lines s)
+
+insert :: LogMessage -> MessageTree -> MessageTree
+insert msg@(LogMessage{}) Leaf = Node Leaf msg Leaf
+insert msg@(LogMessage _ stamp _) (Node left val@(LogMessage _ nodeStamp _) right)
+    | stamp < nodeStamp = Node (insert msg left) val right
+    | otherwise         = Node left val (insert msg right)
+insert _ tree = tree
