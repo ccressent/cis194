@@ -12,11 +12,10 @@ skips xs = map (`every` xs) [1..(length xs)]
 
 
 localMaxima :: [Integer] -> [Integer]
-localMaxima l
-    | length l < 3 = []
 localMaxima (x:y:z:xs)
     | y > x && y > z = y : localMaxima (y:z:xs)
     | otherwise      = localMaxima (y:z:xs)
+localMaxima _ = []
 
 
 histogram :: [Int] -> String
