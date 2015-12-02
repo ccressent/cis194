@@ -1,6 +1,7 @@
 module Golf where
 
-import Data.List
+import Data.List (group, sort, transpose)
+import Data.Maybe (fromMaybe)
 
 -- Take 1 element from the list every n, starting at the first
 every :: Int -> [a] -> [a]
@@ -19,21 +20,12 @@ localMaxima _ = []
 
 
 histogram :: [Int] -> String
-histogram xs = bars r ++ "==========\n0123456789\n"
-    where r = map (\xs -> (head xs, length xs)) $ group $ sort xs
+histogram xs = unlines $ reverse $ transpose $ toBars r
+    where r = map (\l -> (head l, length l)) $ group $ sort xs
 
-bars :: [(Int, Int)] -> String
-bars [] = []
-bars ps = bars (decrement ps) ++ formatLine ps ++ "\n"
+toBars :: [(Int,Int)] -> [String]
+toBars ps = map (`toBar` ps) [0..9]
 
-formatLine :: [(Int, Int)] -> String
-formatLine [] = ""
-formatLine ps = map (\x -> case lookup x ps of
-    Nothing -> ' '
-    Just _  -> '*') [0..9]
-
-decrement :: [(Int, Int)] -> [(Int, Int)]
-decrement []       = []
-decrement ((a,b):xs)
-    | b > 1     = (a, b-1) : decrement xs
-    | otherwise = decrement xs
+toBar :: Int -> [(Int,Int)] -> String
+toBar n ps = show n ++ "=" ++ replicate b '*' ++ replicate (10-b) ' ' 
+    where b = fromMaybe 0 (lookup n ps)
