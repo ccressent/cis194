@@ -56,3 +56,8 @@ map' f = foldr (\x xs -> f x : xs) []
 
 myFoldl :: (a -> b -> a) -> a -> [b] -> a
 myFoldl f base xs = foldr (flip f) base (reverse xs)
+
+
+sieveSundaram :: Integer -> [Integer]
+sieveSundaram n = map ((+1) . (*2)) $ filter (`notElem` excluded) [1..n]
+    where excluded = filter (<= n) [i + j + 2*i*j | i <- [1..n], j <- [i..n]]
