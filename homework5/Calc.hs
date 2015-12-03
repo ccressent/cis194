@@ -3,22 +3,53 @@
 
 module Calc where
 
+import Data.Map as M
+
 import ExprT
+import VarExprT
 import Parser
 import StackVM as VM
 
-newtype MinMax = MinMax Integer deriving (Eq, Show)
-newtype Mod7   = Mod7   Integer deriving (Eq, Show)
 
 class Expr a where
     lit :: Integer -> a
     add :: a -> a -> a
     mul :: a -> a -> a
 
+class HasVars a where
+    var :: String -> a
+
+
 instance Expr ExprT where
     lit = ExprT.Lit
     add = ExprT.Add
     mul = ExprT.Mul
+
+instance HasVars VarExprT where
+    var = VarExprT.Var
+
+instance Expr VarExprT where
+    lit = VarExprT.Lit
+    add = VarExprT.Add
+    mul = VarExprT.Mul
+
+instance HasVars (M.Map String Integer -> Maybe Integer) where
+    var = M.lookup
+
+instance Expr (M.Map String Integer -> Maybe Integer) where
+    lit n _ = Just n
+
+    add expr1 expr2 vs = case expr1 vs of
+                           Nothing -> Nothing
+                           Just x  -> case expr2 vs of
+                                        Nothing -> Nothing
+                                        Just y  -> Just (x+y)
+
+    mul expr1 expr2 vs = case expr1 vs of
+                           Nothing -> Nothing
+                           Just x  -> case expr2 vs of
+                                        Nothing -> Nothing
+                                        Just y  -> Just (x*y)
 
 instance Expr Integer where
     lit = id
@@ -30,10 +61,14 @@ instance Expr Bool where
     add = (||)
     mul = (&&)
 
+newtype MinMax = MinMax Integer deriving (Eq, Show)
+
 instance Expr MinMax where
     lit = MinMax
     add (MinMax a) (MinMax b) = MinMax (max a b)
     mul (MinMax a) (MinMax b) = MinMax (min a b)
+
+newtype Mod7   = Mod7   Integer deriving (Eq, Show)
 
 instance Expr Mod7 where
     lit = Mod7
@@ -67,3 +102,8 @@ evalStr s = case parseExp ExprT.Lit ExprT.Add ExprT.Mul s of
 
 compile :: String -> Maybe Program
 compile = parseExp lit add mul
+
+withVars :: [(String, Integer)]
+         -> (M.Map String Integer -> Maybe Integer)
+         -> Maybe Integer
+withVars vs expr = expr $ M.fromList vs
