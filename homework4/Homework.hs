@@ -54,6 +54,8 @@ xor = odd . foldr (\p acc -> if p then acc + 1 else acc) (0 :: Int)
 map' :: (a -> b) -> [a] -> [b]
 map' f = foldr (\x xs -> f x : xs) []
 
+-- This is wrong...
+-- See: http://stackoverflow.com/questions/6172004/writing-foldl-using-foldr
 myFoldl :: (a -> b -> a) -> a -> [b] -> a
 myFoldl f base xs = foldr (flip f) base (reverse xs)
 
