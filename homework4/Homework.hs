@@ -50,3 +50,6 @@ isBalanced (Node _ left _ right) = abs (height left - height right) <= 1
 
 xor :: [Bool] -> Bool
 xor = odd . foldr (\p acc -> if p then acc + 1 else acc) (0 :: Int)
+
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr (\x xs -> f x : xs) []
