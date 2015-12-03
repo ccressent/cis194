@@ -20,3 +20,29 @@ fun2' = sum . filter even . takeWhile (/= 1) . iterate f
     where f x
             | even x    = x `div` 2
             | otherwise = 3*x + 1
+
+
+data Tree a = Leaf
+            | Node Integer (Tree a) a (Tree a)
+    deriving (Show, Eq)
+
+foldTree :: [a] -> Tree a
+foldTree = foldr insert Leaf
+
+insert :: a -> Tree a -> Tree a
+insert val Leaf = Node 0 Leaf val Leaf
+insert val (Node h left this right)
+    | height left < height right = Node h (insert val left) this right
+    | height left > height right = Node h left this (insert val right)
+    | otherwise                  = Node (1 + height r') left this r'
+    where r' = insert val right
+
+height :: Tree a -> Integer
+height Leaf           = -1
+height (Node h _ _ _) = h
+
+isBalanced :: Tree a -> Bool
+isBalanced Leaf                  = True
+isBalanced (Node _ left _ right) = abs (height left - height right) <= 1
+                                   && isBalanced left
+                                   && isBalanced right
