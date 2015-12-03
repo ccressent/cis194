@@ -46,3 +46,7 @@ isBalanced Leaf                  = True
 isBalanced (Node _ left _ right) = abs (height left - height right) <= 1
                                    && isBalanced left
                                    && isBalanced right
+
+
+xor :: [Bool] -> Bool
+xor = odd . foldr (\p acc -> if p then acc + 1 else acc) (0 :: Int)
