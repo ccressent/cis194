@@ -11,3 +11,12 @@ fibs1 = map fib [0..]
 fibs2 :: [Integer]
 fibs2 = fibs2' 0 1
     where fibs2' a b = a : fibs2' b (a + b)
+
+
+data Stream a = Element a (Stream a)
+
+instance Show a => Show (Stream a) where
+    show s = (show . take 20 . streamToList) s ++ "..."
+
+streamToList :: Stream a -> [a]
+streamToList (Element x rest) = x : streamToList rest
