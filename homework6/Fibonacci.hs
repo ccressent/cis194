@@ -7,3 +7,7 @@ fib n = fib (n-1) + fib (n-2)
 
 fibs1 :: [Integer]
 fibs1 = map fib [0..]
+
+fibs2 :: [Integer]
+fibs2 = fibs2' 0 1
+    where fibs2' a b = a : fibs2' b (a + b)
