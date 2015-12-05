@@ -1,3 +1,7 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# OPTIONS_GHC -fno-warn-missing-methods #-}
+{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
+
 module Fibonacci where
 
 fib :: Integer -> Integer
@@ -14,6 +18,16 @@ fibs2 = fibs2' 0 1
 
 
 data Stream a = Element a (Stream a)
+
+instance Num (Stream Integer) where
+    fromInteger n = Element n (streamRepeat 0)
+    negate = streamMap negate
+    (Element x s1)  + (Element y s2)    = Element (x+y) (s1 + s2)
+    (Element a0 a') * b@(Element b0 b') = Element (a0*b0) (streamMap (*a0) b' + (a' * b))
+
+instance Fractional (Stream Integer) where
+    a@(Element a0 a') / b@(Element b0 b') = Element (a0 `div` b0) (a' - q*b')
+        where q = a/b
 
 instance Show a => Show (Stream a) where
     show s = (show . take 20 . streamToList) s ++ "..."
@@ -52,3 +66,9 @@ interleaveStreams (Element x s1) s2 = Element x (interleaveStreams s2 s1)
 ruler :: Stream Integer
 ruler = ruler' 0
     where ruler' n = interleaveStreams (streamRepeat n) (ruler' (n+1))
+
+x :: Stream Integer
+x = Element 0 (Element 1 (streamRepeat 0))
+
+fibs3 :: Stream Integer
+fibs3 = x / (1 - x - x*x)
