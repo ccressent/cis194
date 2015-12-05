@@ -4,6 +4,8 @@
 
 module Fibonacci where
 
+import Data.List (transpose)
+
 fib :: Integer -> Integer
 fib 0 = 0
 fib 1 = 1
@@ -72,3 +74,15 @@ x = Element 0 (Element 1 (streamRepeat 0))
 
 fibs3 :: Stream Integer
 fibs3 = x / (1 - x - x*x)
+
+
+data Matrix = Matrix [[Integer]]
+    deriving Show
+
+instance Num Matrix where
+    Matrix a * Matrix b = Matrix [ [ sum $ zipWith (*) r c | c <- transpose b ] | r <- a ]
+
+fibs4 :: Integer -> Integer
+fibs4 0 = 1
+fibs4 n = extractFibN $ Matrix [[1,1], [1,0]] ^ n
+    where extractFibN (Matrix a) = (!! 1) . head $ a
