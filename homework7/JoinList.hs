@@ -30,13 +30,22 @@ indexJ n jl@(Append _ left right)
     | otherwise              = indexJ (n - sizeOf (tag left)) right
 
 dropJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
-dropJ _ Empty = Empty
-dropJ 0 jl    = jl
+dropJ _ Empty        = Empty
+dropJ 0 jl           = jl
 dropJ _ (Single _ _) = Empty
 dropJ n jl@(Append _ left right)
     | n >= sizeOf (tag jl)   = Empty
     | n >  sizeOf (tag left) = Empty +++ dropJ (n - sizeOf (tag left)) right
     | otherwise              = dropJ n left +++ right
+
+takeJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+takeJ _ Empty           = Empty
+takeJ 0 jl              = jl
+takeJ _ jl@(Single _ _) = jl
+takeJ n jl@(Append _ left right)
+    | n >= sizeOf (tag jl)   = jl
+    | n >  sizeOf (tag left) = left +++ takeJ (n - sizeOf (tag left)) right
+    | otherwise              = takeJ n left
 
 
 --
