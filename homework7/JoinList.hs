@@ -29,6 +29,15 @@ indexJ n jl@(Append _ left right)
     | n <  sizeOf (tag left) = indexJ n left
     | otherwise              = indexJ (n - sizeOf (tag left)) right
 
+dropJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+dropJ _ Empty = Empty
+dropJ 0 jl    = jl
+dropJ _ (Single _ _) = Empty
+dropJ n jl@(Append _ left right)
+    | n >= sizeOf (tag jl)   = Empty
+    | n >  sizeOf (tag left) = Empty +++ dropJ (n - sizeOf (tag left)) right
+    | otherwise              = dropJ n left +++ right
+
 
 --
 -- Everything below used to run manual tests in the REPL
