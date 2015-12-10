@@ -10,3 +10,8 @@ instance Monoid GuestList where
 
 glCons :: Employee -> GuestList -> GuestList
 glCons x (GL xs fun) = GL (x : xs) (fun + empFun x)
+
+moreFun :: GuestList -> GuestList -> GuestList
+moreFun gl1 gl2 = case compare gl1 gl2 of
+                    GT -> gl1
+                    _  -> gl2
