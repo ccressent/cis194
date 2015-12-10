@@ -50,7 +50,7 @@ dropJ 0 jl           = jl
 dropJ _ (Single _ _) = Empty
 dropJ n jl@(Append _ left right)
     | n >= sizeOf (tag jl)   = Empty
-    | n >  sizeOf (tag left) = Empty +++ dropJ (n - sizeOf (tag left)) right
+    | n >  sizeOf (tag left) = dropJ (n - sizeOf (tag left)) right
     | otherwise              = dropJ n left +++ right
 
 takeJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
