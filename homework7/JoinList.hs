@@ -41,7 +41,7 @@ dropJ n jl@(Append _ left right)
 
 takeJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
 takeJ _ Empty           = Empty
-takeJ 0 jl              = jl
+takeJ 0 _               = Empty
 takeJ _ jl@(Single _ _) = jl
 takeJ n jl@(Append _ left right)
     | n >= sizeOf (tag jl)   = jl
