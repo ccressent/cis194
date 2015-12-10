@@ -1,7 +1,9 @@
+{-# LANGUAGE FlexibleInstances #-}
 module JoinList where
 
 import Data.Monoid
 
+import Buffer
 import Sized
 import Scrabble
 
@@ -9,6 +11,18 @@ data JoinList m a = Empty
                   | Single m a
                   | Append m (JoinList m a) (JoinList m a)
   deriving (Eq, Show)
+
+instance Monoid m => Monoid (JoinList m a) where
+    mempty  = Empty
+    mappend = (+++)
+
+instance Buffer (JoinList (Score, Size) String) where
+    toString           = concat . jlToList
+    fromString         = mconcat . map (\s -> Single (scoreString s, Size 1) s) . lines
+    line               = indexJ
+    replaceLine n s jl = takeJ n jl +++ fromString s +++ dropJ (n+1) jl
+    numLines           = sizeOf . tag
+    value              = getScore . fst . tag
 
 (+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
 (+++) jl1 jl2 = Append (tag jl1 <> tag jl2) jl1 jl2
