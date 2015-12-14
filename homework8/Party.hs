@@ -2,6 +2,7 @@
 
 module Party where
 
+import Data.Tree
 import Employee
 
 instance Monoid GuestList where
@@ -15,3 +16,7 @@ moreFun :: GuestList -> GuestList -> GuestList
 moreFun gl1 gl2 = case compare gl1 gl2 of
                     GT -> gl1
                     _  -> gl2
+
+treeFold :: b -> (a -> [b] -> b) -> Tree a -> b
+treeFold z f t | null (subForest t) = f (rootLabel t) [z]
+treeFold z f t = f (rootLabel t) (map (treeFold z f) (subForest t))
