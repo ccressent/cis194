@@ -2,6 +2,7 @@
 
 module Party where
 
+import Data.List (sortOn)
 import Data.Tree
 import Employee
 
@@ -31,3 +32,20 @@ maxFun t = moreFun gl1 gl2
     where options = treeFold (mempty, mempty) nextLevel t
           gl1     = fst options
           gl2     = snd options
+
+
+sortGLByName :: GuestList -> GuestList
+sortGLByName (GL xs fun) = GL (sortOn empName xs) fun
+
+glToNames :: GuestList -> [String]
+glToNames (GL xs _) = map empName xs
+
+glToFun :: GuestList -> Integer
+glToFun (GL _ fun) = fun
+
+printGL :: GuestList -> IO ()
+printGL gl = putStr $ "Total fun: " ++ show (glToFun gl) ++ "\n"
+                    ++ (unlines . glToNames . sortGLByName) gl
+
+main :: IO ()
+main = readFile "company.txt" >>= printGL . maxFun . read
