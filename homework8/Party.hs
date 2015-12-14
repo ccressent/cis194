@@ -20,3 +20,8 @@ moreFun gl1 gl2 = case compare gl1 gl2 of
 treeFold :: b -> (a -> [b] -> b) -> Tree a -> b
 treeFold z f t | null (subForest t) = f (rootLabel t) [z]
 treeFold z f t = f (rootLabel t) (map (treeFold z f) (subForest t))
+
+nextLevel :: Employee -> [(GuestList, GuestList)] -> (GuestList, GuestList)
+nextLevel e gls = (withThisEmployee, withoutThisEmployee)
+    where withThisEmployee    = glCons e $ mconcat $ map snd gls
+          withoutThisEmployee = mconcat $ map fst gls
