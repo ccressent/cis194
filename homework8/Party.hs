@@ -25,3 +25,9 @@ nextLevel :: Employee -> [(GuestList, GuestList)] -> (GuestList, GuestList)
 nextLevel e gls = (withThisEmployee, withoutThisEmployee)
     where withThisEmployee    = glCons e $ mconcat $ map snd gls
           withoutThisEmployee = mconcat $ map fst gls
+
+maxFun :: Tree Employee -> GuestList
+maxFun t = moreFun gl1 gl2
+    where options = treeFold (mempty, mempty) nextLevel t
+          gl1     = fst options
+          gl2     = snd options
