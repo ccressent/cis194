@@ -63,3 +63,12 @@ instance Functor Parser where
       where p' str = case p str of
                        Nothing        -> Nothing
                        Just (x, rest) -> Just (f x, rest)
+
+instance Applicative Parser where
+    pure x = Parser (const (Just (x, "")))
+    p1 <*> p2 = Parser p
+      where p str = case runParser p1 str of
+                      Nothing -> Nothing
+                      Just (f, r1) -> case runParser p2 r1 of
+                                        Nothing      -> Nothing
+                                        Just (v, r2) -> Just (f v, r2)
