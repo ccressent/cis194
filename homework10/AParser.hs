@@ -57,3 +57,9 @@ posInt = Parser f
 ------------------------------------------------------------
 -- Your code goes below here
 ------------------------------------------------------------
+
+instance Functor Parser where
+    fmap f (Parser p) = Parser p'
+      where p' str = case p str of
+                       Nothing        -> Nothing
+                       Just (x, rest) -> Just (f x, rest)
