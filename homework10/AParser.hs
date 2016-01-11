@@ -72,3 +72,14 @@ instance Applicative Parser where
                       Just (f, r1) -> case runParser p2 r1 of
                                         Nothing      -> Nothing
                                         Just (v, r2) -> Just (f v, r2)
+
+
+abParser :: Parser (Char, Char)
+abParser = (,) <$> char 'a' <*> char 'b'
+
+abParser_ :: Parser ()
+abParser_ = () <$ abParser
+-- equivalent to const () <$> abParser
+
+intPair :: Parser [Integer]
+intPair = (\a _ b -> [a,b]) <$> posInt <*> char ' ' <*> posInt
