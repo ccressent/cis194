@@ -59,13 +59,13 @@ posInt = Parser f
 ------------------------------------------------------------
 
 instance Functor Parser where
-    fmap f (Parser p) = Parser p'
-      where p' str = case p str of
+    fmap f p = Parser p'
+      where p' str = case runParser p str of
                        Nothing        -> Nothing
                        Just (x, rest) -> Just (f x, rest)
 
 instance Applicative Parser where
-    pure x = Parser (const (Just (x, "")))
+    pure x    = Parser (const (Just (x, "")))
     p1 <*> p2 = Parser p
       where p str = case runParser p1 str of
                       Nothing -> Nothing
