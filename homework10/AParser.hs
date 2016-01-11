@@ -87,3 +87,7 @@ abParser_ = () <$ abParser
 
 intPair :: Parser [Integer]
 intPair = (\a _ b -> [a,b]) <$> posInt <*> char ' ' <*> posInt
+
+
+intOrUppercase :: Parser ()
+intOrUppercase = () <$ posInt <|> () <$ satisfy isUpper
