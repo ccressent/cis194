@@ -73,6 +73,10 @@ instance Applicative Parser where
                                         Nothing      -> Nothing
                                         Just (v, r2) -> Just (f v, r2)
 
+instance Alternative Parser where
+    empty     = Parser (const Nothing)
+    p1 <|> p2 = Parser (\str -> runParser p1 str <|> runParser p2 str)
+
 
 abParser :: Parser (Char, Char)
 abParser = (,) <$> char 'a' <*> char 'b'
